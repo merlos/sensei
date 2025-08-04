@@ -18,13 +18,14 @@
 // Onboard blue led pin
 #define INFO_LED 2
 
-#define DELAY_SECONDS 10 
+// Time the microcontroler will be in deep sleep
+#define SLEEP_SECONDS 10 
 
 // HTTPS
-#define SERVER_URL "https://httpbin.org/get"
+#define SERVER_URL "https://httpbin.org/post"
 
 // Amazon Root CA 1 - Root certificate for httpbin.org
-const char* root_ca = \
+#define ROOT_CA \
 "-----BEGIN CERTIFICATE-----\n" \
 "MIIEkjCCA3qgAwIBAgITBn+USionzfP6wq4rAfkI7rnExjANBgkqhkiG9w0BAQsF\n" \
 "ADCBmDELMAkGA1UEBhMCVVMxEDAOBgNVBAgTB0FyaXpvbmExEzARBgNVBAcTClNj\n" \
@@ -51,7 +52,7 @@ const char* root_ca = \
 "bRRYh5TmOTFffHPLkIhqhBGWJ6bt2YFGpn6jcgAKUj6DiAdjd4lpFw85hdKrCEVN\n" \
 "0FE6/V1dN2RMfjCyVSRCnTawXZwXgWHxyvkQAiSr6w10kY17RSlQOYiypok1JR4U\n" \
 "akcjMS9cmvqtmg5iUaQqqcT5NJ0hGA==\n" \
-"-----END CERTIFICATE-----\n";
+"-----END CERTIFICATE-----\n"
 
 
 #endif
