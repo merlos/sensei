@@ -1,6 +1,6 @@
 # app/controllers/sensor_data_controller.rb
 class SensorDataController < ApplicationController
-  skip_before_action :verify_authenticity_token
+  #skip_before_action :verify_authenticity_token
 
   def create
     sensor_code = params[:sensor_code]
@@ -20,7 +20,7 @@ class SensorDataController < ApplicationController
     end
 
     # Create time-series value
-    SensorData.create!(sensor_code: sensor_code, value: value)
+    SensorDatum.create!(sensor_code: sensor_code, value: value)
 
     render json: { status: 'ok' }, status: :created
   end

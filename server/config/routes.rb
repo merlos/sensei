@@ -11,5 +11,3 @@ Rails.application.routes.draw do
   # config/routes.rb
   post '/sensor_data', to: 'sensor_data#create'
 end
-
-end

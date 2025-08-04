@@ -29,6 +29,11 @@ curl -X POST http://localhost:8000/sensor_data \
   -d '{"sensor_code": "temperature_kitchen", "value": "22.5"}'
 ```
 
+# Run tests
+
+```bash
+rails t
+```
 
 Things you may want to cover:
 
