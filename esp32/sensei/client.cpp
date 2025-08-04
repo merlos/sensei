@@ -6,6 +6,16 @@
 #include "client.h"
 
 
+int checkHTTPPrefix(const String& url) {
+  if (url.startsWith("http://")) {
+    return URL_IS_HTTP;
+  } else if (url.startsWith("https://")) {
+    return URL_IS_HTTPS;
+  } else {
+    return URL_IS_INVALID_HTTP;
+  }
+}
+
 
 ///
 /// Builds the JSON payload based on the sensors array.
