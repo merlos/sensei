@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <WiFi.h>
 #include <WiFiClientSecure.h>
 #include <HTTPClient.h>
 
@@ -67,42 +68,71 @@ void makeHTTPSRequest() {
 }
 
 
+
 // Function to make POST request with JSON data
 void makeHTTPSPOST(String payload) {
-  WiFiClientSecure client;
+  WiFiClientSecure httpsClient;
+  WiFiClient httpClient;
   HTTPClient https;
   
   String serverURL = SERVER_URL;
   String apiToken = SERVER_API_TOKEN;
 
-  client.setCACert(ROOT_CA);
+  int url_type = checkHTTPPrefix(serverURL); // Added missing semicolon
   
-  Serial.print("Making HTTPS POST Request: ");
+  Serial.print("Making POST Request to: ");
   Serial.println(serverURL);
+  Serial.printf("URL Type: %d\n", url_type);
 
-  if (apiToken.length() > 0) {
-        https.addHeader("Authorization", "Bearer " + apiToken);
+  bool connectionSuccess = false;
+
+  if (url_type == URL_IS_HTTPS) {
+    // HTTPS connection
+    httpsClient.setCACert(ROOT_CA);
+    connectionSuccess = https.begin(httpsClient, serverURL);
+    Serial.println("Using HTTPS connection");
+  } else if (url_type == URL_IS_HTTP) {
+    // HTTP connection
+    connectionSuccess = https.begin(httpClient, serverURL);
+    Serial.println("Using HTTP connection");
+  } else {
+    Serial.println("Error: Invalid URL format. Must start with http:// or https://");
+    return;
   }
-   
-  if (https.begin(client, serverURL )) {
+
+  if (connectionSuccess) {
     // Add headers
     https.addHeader("Content-Type", "application/json");
     https.addHeader("User-Agent", "Sensei Client ESP32 v1.0");
+    
+    // Add authorization header if token is provided
+    if (apiToken.length() > 0) {
+      https.addHeader("Authorization", "Bearer " + apiToken);
+    }
     
     int httpCode = https.POST(payload);
 
     if (httpCode > 0) {
       Serial.printf("POST response code: %d\n", httpCode);
       
-      if (httpCode == HTTP_CODE_OK) {
+      if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_CREATED) {
         String response = https.getString();
         Serial.println("POST Response:");
         Serial.println(response);
+      } else {
+        Serial.printf("Server returned error code: %d\n", httpCode);
+        String errorResponse = https.getString();
+        if (errorResponse.length() > 0) {
+          Serial.println("Error response:");
+          Serial.println(errorResponse);
+        }
       }
     } else {
       Serial.printf("POST request failed: %s\n", https.errorToString(httpCode).c_str());
     }
     
     https.end();
+  } else {
+    Serial.println("Failed to connect to server");
   }
 }

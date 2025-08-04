@@ -47,7 +47,7 @@ void loop() {
   digitalWrite(INFO_LED, HIGH);
   //makeHTTPSRequest();
   // JSON payload
-  String jsonPayload = "{\"sensor\":\"temperature\",\"value\":25.6,\"unit\":\"celsius\"}";
+  String jsonPayload = "{\"sensor\":\"temperature_test\",\"value\":25.6}";
   
   makeHTTPSPOST(jsonPayload);
   digitalWrite(INFO_LED, LOW);

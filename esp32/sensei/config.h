@@ -22,7 +22,8 @@
 #define SLEEP_SECONDS 10 
 
 // HTTPS
-#define SERVER_URL "https://httpbin.org/post"
+//#define SERVER_URL "https://httpbin.org/post"
+#define SERVER_URL "http://192.168.1.58:3000/sensor_data"
 
 // Amazon Root CA 1 - Root certificate for httpbin.org
 #define ROOT_CA \
