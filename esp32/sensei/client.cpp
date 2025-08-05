@@ -21,11 +21,11 @@ int checkHTTPPrefix(const String& url) {
 ///
 /// Builds the JSON payload based on the sensors array.
 ///
-String buildPayload(SensorData sensor, int size) {
+String buildPayload(SensorData sensor) {
 
   String payload = "{";
-  payload += "\"sensor_code\": \"" + sensor.sensor + "\",";
-  payload += "\"value\" : \"" + sensor.value + "\"";
+  payload += "\"sensor_code\": \"" + sensor.sensorCode + "\",";
+  payload += "\"value\": \"" + sensor.value + "\"";
   payload +="}";
   Serial.print("buildPayload");
   Serial.println(payload);

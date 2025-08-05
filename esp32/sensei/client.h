@@ -8,7 +8,7 @@
 
 struct SensorData {
   /// string id of he sensor
-  String sensor;
+  String sensorCode;
   /// value as string
   String value;
 };
@@ -20,7 +20,7 @@ struct SensorData {
 
 int checkHTTPPrefix(const String& url);
 
-String buildPayload(SensorData sensors[], int size);
+String buildPayload(SensorData sensor);
 
 void makeHTTPSRequest();
 
