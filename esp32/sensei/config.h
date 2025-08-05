@@ -15,6 +15,11 @@
 ///   CONFIGURATION
 /////////////////////////////////
 
+// Define the DHT11 sensor pin and type
+#define DHT_PIN 4        // GPIO pin where DHT11 data pin is connected
+#define DHT_TYPE DHT22   // DHT sensor type
+
+
 // Onboard blue led pin
 #define INFO_LED 2
 
@@ -54,6 +59,9 @@
 "0FE6/V1dN2RMfjCyVSRCnTawXZwXgWHxyvkQAiSr6w10kY17RSlQOYiypok1JR4U\n" \
 "akcjMS9cmvqtmg5iUaQqqcT5NJ0hGA==\n" \
 "-----END CERTIFICATE-----\n"
+
+
+
 
 
 #endif
