@@ -16,4 +16,16 @@ class SensorTest < ActiveSupport::TestCase
     duplicate = Sensor.new(code: "humidity")
     assert_not duplicate.valid?
   end
+
+  test "invalid with special characters in code" do
+    sensor = Sensor.new(code: "temp@123", name: "Bad Code")
+    assert_not sensor.valid?
+  end
+
+  test "invalid when code is too long" do
+    long_code = "a" * 51
+    sensor = Sensor.new(code: long_code, name: "Too Long")
+    assert_not sensor.valid?
+  end
+  
 end

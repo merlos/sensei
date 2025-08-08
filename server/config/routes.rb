@@ -10,4 +10,7 @@ Rails.application.routes.draw do
 
   # config/routes.rb
   post '/sensor_data', to: 'sensor_data#create'
+  get '/sensors', to: 'sensors#index' 
+  get '/sensor_data/:sensor_code', to: 'sensor_data#index'
+
 end
