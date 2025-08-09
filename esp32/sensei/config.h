@@ -15,20 +15,18 @@
 ///   CONFIGURATION
 /////////////////////////////////
 
-// Define the DHT11 sensor pin and type
-#define DHT_PIN 4        // GPIO pin where DHT11 data pin is connected
-#define DHT_TYPE DHT22   // DHT sensor type
 
+// Server address 
+//
+// For development/testing this page returns what you sent.
+// #define SERVER_URL "https://httpbin.org/post"
+//
+// URL for testing within a local network
+#define SERVER_URL "http://192.168.1.58:3000/sensor_data"
 
-// Onboard blue led pin
-#define INFO_LED 2
 
 // Time the microcontroler will be in deep sleep
 #define SLEEP_SECONDS 10 
-
-// HTTPS
-//#define SERVER_URL "https://httpbin.org/post"
-#define SERVER_URL "http://192.168.1.58:3000/sensor_data"
 
 // Amazon Root CA 1 - Root certificate for httpbin.org
 #define ROOT_CA \
@@ -60,8 +58,12 @@
 "akcjMS9cmvqtmg5iUaQqqcT5NJ0hGA==\n" \
 "-----END CERTIFICATE-----\n"
 
+// Define the DHT11 sensor pin and type
+#define DHT_PIN 4        // GPIO pin where DHT11 data pin is connected
+#define DHT_TYPE DHT22   // DHT sensor type
 
-
+// Onboard blue led pin
+#define INFO_LED 2
 
 
 #endif
