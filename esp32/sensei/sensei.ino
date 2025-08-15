@@ -2,14 +2,10 @@
 #include <WiFiClientSecure.h>
 #include <HTTPClient.h>
 #include "esp_sleep.h"
+#include "esp_wifi.h"
 
 // Sensor 
 #include "DHT.h"
-
-// Define the DHT11 sensor pin and type
-#define DHT_PIN 4        // GPIO pin where DHT11 data pin is connected
-#define DHT_TYPE DHT22   // DHT sensor type
-
 
 // Use this to configure the project
 #include "config.h"
@@ -29,6 +25,18 @@ bool infoLED = false;
 // Initialize DHT sensor
 DHT dht(DHT_PIN, DHT_TYPE);
 
+/**
+Displays the device Mac address
+*/
+void printMac(){
+  uint8_t mac[6];
+  esp_err_t ret = esp_wifi_get_mac(WIFI_IF_STA, mac);
+  if (ret == ESP_OK) {
+    Serial.printf("%02x:%02x:%02x:%02x:%02x:%02x\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+  } else {
+    Serial.println("Failed to get MAC address");
+  }
+}
 
 void setup() {
   // Setup the pin
@@ -38,10 +46,12 @@ void setup() {
 
   // Connect to WiFi
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  printMac();
   Serial.print("Connecting to WiFi...");
   while (WiFi.status() != WL_CONNECTED) {
     delay(250);
     Serial.print(".");
+    printMac();
     infoLED = !infoLED;
     digitalWrite(INFO_LED, infoLED);
   }
