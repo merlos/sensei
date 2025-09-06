@@ -23,11 +23,11 @@
 #define INFO_LED 2
 
 // Time the microcontroler will be in deep sleep
-#define SLEEP_SECONDS 10 
+#define SLEEP_SECONDS 1200 
 
 // HTTPS
 //#define SERVER_URL "https://httpbin.org/post"
-#define SERVER_URL "http://192.168.3.104:3000/sensor_data"
+#define SERVER_URL "http://192.168.2.1:3000/sensor_data"
 
 // Amazon Root CA 1 - Root certificate for httpbin.org
 #define ROOT_CA \
