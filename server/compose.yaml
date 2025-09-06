@@ -1,0 +1,18 @@
+services:
+  sensei:
+    #build: .
+    container_name: sensei
+    image: merlos/sensei:latest
+    env_file:
+      - .env
+    environment:
+      # 
+      - RAILS_MASTER_KEY
+    ports:
+      - "3000:80"
+    volumes:
+      - ./storage:/rails/storage
+      # Replace the production yaml with you own credentials file
+      - ./config/credentials/production.yml.enc:/rails/config/credentials/production.yml.enc:ro
+      # Alternatively you can also mount the key file
+      #- ./config/credentials/production.key:/rails/config/credentials/production.key:ro
