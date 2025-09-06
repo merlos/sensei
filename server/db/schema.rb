@@ -25,5 +25,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_04_164132) do
     t.string "value_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_sensors_on_code", unique: true
   end
 end

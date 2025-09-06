@@ -8,6 +8,6 @@ class CreateSensors < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    add_index :sensors, :code, :unique: true
+    add_index :sensors, :code, unique: true
   end
 end
