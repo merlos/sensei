@@ -1,1 +1,3 @@
 secrets.h
+server/config/credentials/production.yml.enc
+server/config/credentials.yml.enc
