@@ -19,7 +19,7 @@ Sensei uses a pre-shared key as authentication token that must be the same in th
 Edit the credentials:
 
 ```sh
-EDITOR="nano" bin/rails credentials:edit
+EDITOR="nano" bin/rails credentials:edit --environment development
 ```
 
 Modify the line to set the same value in the `bearer_token` as in the file `esp32/sensei/secrets.h`:
@@ -153,5 +153,43 @@ Then run
 ```sh
  docker.sh
  ```
+This will upload the image to the registry it generates only an `amd64` architecture image.
 
- This will upload the image to the registry it generates only an `amd64` architecture image.
+Note that the docker image will include all the `config/credentials/*.yaml.enc` files available in the machine running the script.
+
+# API endpoints
+
+The available API endpoints are:
+
+* POST sensor_data {"sensor_code": "string", "value" : "string"}
+
+```sh
+curl -X POST http://localhost:3000/sensor_data \
+  -H "Authorization: Bearer my-secret-token-123" \
+  -H "Content-Type: application/json" \
+  -d '{"sensor_code": "temperature_kitchen", "value": "22.5"}'
+```
+
+* **GET sensors**
+  Gets the list of registered sensors
+```sh 
+curl http://localhost:3000/sensors -H "Authorization: Bearer my-secret-token-123"  
+
+[{"id":1,"code":"temperature_kitchen","name":"Temperature Kitchen","units":"","value_type":"string","created_at":"2025-09-06T03:08:04.201Z","updated_at":"2025-09-06T03:08:04.201Z"}]% 
+```
+
+* **GET sensor_data**
+GET /sensor_data/<code>?&after=...&before=...&page=1&per=100
+Arguments:
+   - after: datetime 
+   - before: datetime
+   - page: page number (when paginated)
+   - per: items per page
+
+# Eg: GET /sensor_data/temperature_kitchen?after=2025-08-01T00:00:00Z&before=2025-08-06T00:00:00Z&page=1&per=20
+
+
+Example Get the latet one
+```curl "http://localhost:3000/sensor_data/temperature_kitchen?page=1&per=1" -H "Authorization: Bearer my-secret-token-123" 
+``` 
+[{"id":3,"sensor_code":"temperature_kitchen","value":"22.5","created_at":"2025-09-06T03:40:42.021Z","updated_at":"2025-09-06T03:40:42.021Z"}]
