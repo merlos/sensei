@@ -1,3 +1,11 @@
+//
+//  ContentView.swift
+//  Sensei
+//
+//  Created by Merlos on 9/7/25.
+//
+
+
 import SwiftUI
 import SwiftData
 

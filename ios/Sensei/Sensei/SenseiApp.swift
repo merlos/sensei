@@ -1,10 +1,3 @@
-//
-//  SenseiApp.swift
-//  Sensei
-//
-//  Created by Merlos on 9/7/25.
-//
-
 import SwiftUI
 import SwiftData
 
@@ -12,7 +5,9 @@ import SwiftData
 struct SenseiApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Sensor.self,
+            SensorData.self,
+            Configuration.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

@@ -1,3 +1,11 @@
+//
+//  Sensor.swift
+//  Sensei
+//
+//  Created by Merlos on 9/7/25.
+//
+
+
 import Foundation
 import SwiftData
 

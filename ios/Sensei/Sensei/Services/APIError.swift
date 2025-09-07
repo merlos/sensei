@@ -1,5 +1,11 @@
+//
+//  APIError.swift
+//  Sensei
+//
+//  Created by Merlos on 9/7/25.
+//
 
-// MARK: - Services/APIError.swift
+
 import Foundation
 
 enum APIError: Error, LocalizedError {

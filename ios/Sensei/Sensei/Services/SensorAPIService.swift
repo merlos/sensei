@@ -1,3 +1,10 @@
+//
+//  SensorAPIService.swift
+//  Sensei
+//
+//  Created by Merlos on 9/7/25.
+//
+
 import Foundation
 
 class SensorAPIService: ObservableObject {
@@ -8,6 +15,7 @@ class SensorAPIService: ObservableObject {
         self.configManager = configManager
     }
     
+    @MainActor
     private func createRequest(for endpoint: String) -> URLRequest? {
         guard let config = configManager.currentConfiguration,
               let url = URL(string: "\(config.serverURL)/\(endpoint)") else {
@@ -21,7 +29,8 @@ class SensorAPIService: ObservableObject {
     }
     
     func fetchSensors() async throws -> [APISensor] {
-        guard let request = createRequest(for: "sensors") else {
+        let request = await createRequest(for: "sensors")
+        guard let request = request else {
             throw APIError.invalidURL
         }
         
@@ -30,7 +39,8 @@ class SensorAPIService: ObservableObject {
     }
     
     func fetchSensorData(for sensorCode: String, page: Int = 1, per: Int = 1) async throws -> [APISensorData] {
-        guard let request = createRequest(for: "sensor_data/\(sensorCode)?page=\(page)&per=\(per)") else {
+        let request = await createRequest(for: "sensor_data/\(sensorCode)?page=\(page)&per=\(per)")
+        guard let request = request else {
             throw APIError.invalidURL
         }
         

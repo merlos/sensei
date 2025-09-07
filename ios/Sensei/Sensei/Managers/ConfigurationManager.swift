@@ -1,3 +1,11 @@
+//
+//  ConfigurationManager.swift
+//  Sensei
+//
+//  Created by Merlos on 9/7/25.
+//
+
+
 import Foundation
 import SwiftUI
 import SwiftData
