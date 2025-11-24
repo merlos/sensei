@@ -34,7 +34,7 @@ struct SensorRowView: View {
                 Spacer()
                 
                 if let data = sensorWithData.latestData {
-                    Text("Updated: \(formatDate(data.updatedAt))")
+                    Text("Sensor data updated: \(formatDate(data.updatedAt))")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -45,11 +45,11 @@ struct SensorRowView: View {
     
     private func formatDate(_ dateString: String) -> String {
         let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         if let date = formatter.date(from: dateString) {
-            let displayFormatter = DateFormatter()
-            displayFormatter.dateStyle = .short
-            displayFormatter.timeStyle = .short
-            return displayFormatter.string(from: date)
+            let relativeFormatter = RelativeDateTimeFormatter()
+            relativeFormatter.unitsStyle = .full
+            return relativeFormatter.localizedString(for: date, relativeTo: Date())
         }
         return dateString
     }
