@@ -15,6 +15,7 @@ struct ContentView: View {
     @StateObject private var apiService: SensorAPIService
     @StateObject private var dataManager: SensorDataManager
     @State private var showingConfiguration = false
+    @State private var showingWidgetConfiguration = false
     
     init() {
         let config = ConfigurationManager()
@@ -49,10 +50,20 @@ struct ContentView: View {
                                 .scaleEffect(0.8)
                         }
                         
-                        Button(action: {
-                            showingConfiguration = true
-                        }) {
-                            Image(systemName: "gearshape.fill")
+                        Menu {
+                            Button(action: {
+                                showingWidgetConfiguration = true
+                            }) {
+                                Label("Widget Settings", systemImage: "square.on.square.dashed")
+                            }
+                            
+                            Button(action: {
+                                showingConfiguration = true
+                            }) {
+                                Label("App Settings", systemImage: "gearshape")
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
                         }
                     }
                 }
@@ -70,6 +81,12 @@ struct ContentView: View {
                             }
                         }
                 }
+            }
+            .sheet(isPresented: $showingWidgetConfiguration) {
+                WidgetConfigurationView(
+                    dataManager: dataManager,
+                    apiService: apiService
+                )
             }
         }
         .onAppear {
