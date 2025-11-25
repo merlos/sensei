@@ -19,11 +19,12 @@ final class Sensor {
     var createdAt: String
     var updatedAt: String
     var lastFetchedAt: Date
+    var position: Int
     
     @Relationship(deleteRule: .cascade, inverse: \SensorData.sensor)
     var sensorDataEntries: [SensorData] = []
     
-    init(sensorId: Int, code: String, name: String, units: String, valueType: String, createdAt: String, updatedAt: String) {
+    init(sensorId: Int, code: String, name: String, units: String, valueType: String, createdAt: String, updatedAt: String, position: Int = 0) {
         self.sensorId = sensorId
         self.code = code
         self.name = name
@@ -32,6 +33,7 @@ final class Sensor {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.lastFetchedAt = Date()
+        self.position = position
     }
     
     // Convert from API response

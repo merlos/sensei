@@ -10,6 +10,8 @@ import SwiftUI
 
 struct SensorListView: View {
     @ObservedObject var dataManager: SensorDataManager
+    @ObservedObject var configManager: ConfigurationManager
+    @ObservedObject var apiService: SensorAPIService
     
     var body: some View {
         List {
@@ -20,7 +22,13 @@ struct SensorListView: View {
                     .padding()
             } else {
                 ForEach(dataManager.sensorsWithData) { sensorWithData in
-                    SensorRowView(sensorWithData: sensorWithData)
+                    NavigationLink(destination: SensorDetailView(
+                        configManager: configManager,
+                        apiService: apiService,
+                        sensor: sensorWithData.sensor
+                    )) {
+                        SensorRowView(sensorWithData: sensorWithData)
+                    }
                 }
             }
         }

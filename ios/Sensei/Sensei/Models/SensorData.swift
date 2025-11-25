@@ -40,4 +40,28 @@ final class SensorData {
             updatedAt: apiData.updatedAt
         )
     }
+    
+    // Computed properties for chart display
+    var timestamp: Date {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        
+        // Try with fractional seconds first
+        if let date = isoFormatter.date(from: createdAt) {
+            return date
+        }
+        
+        // Fall back to standard format
+        isoFormatter.formatOptions = [.withInternetDateTime]
+        if let date = isoFormatter.date(from: createdAt) {
+            return date
+        }
+        
+        // Last resort: return current date
+        return Date()
+    }
+    
+    var numericValue: Double {
+        return Double(value) ?? 0.0
+    }
 }

@@ -12,6 +12,7 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @StateObject private var configManager = ConfigurationManager()
+    @StateObject private var apiService: SensorAPIService
     @StateObject private var dataManager: SensorDataManager
     @State private var showingConfiguration = false
     
@@ -21,6 +22,7 @@ struct ContentView: View {
         let dataManager = SensorDataManager(apiService: apiService, configManager: config)
         
         self._configManager = StateObject(wrappedValue: config)
+        self._apiService = StateObject(wrappedValue: apiService)
         self._dataManager = StateObject(wrappedValue: dataManager)
     }
     
@@ -30,7 +32,11 @@ struct ContentView: View {
                 if !configManager.isConfigured {
                     ConfigurationView(configManager: configManager)
                 } else {
-                    SensorListView(dataManager: dataManager)
+                    SensorListView(
+                        dataManager: dataManager,
+                        configManager: configManager,
+                        apiService: apiService
+                    )
                 }
             }
             .navigationTitle("Sensei")
