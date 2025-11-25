@@ -58,6 +58,7 @@ struct SenseiWidgetProvider: TimelineProvider {
 
 struct SenseiWidgetView: View {
     var entry: SenseiWidgetEntry
+    @Environment(\.widgetFamily) var family
     
     var body: some View {
         VStack(spacing: 0) {
@@ -93,53 +94,50 @@ struct SensorWidgetRow: View {
     let sensor: WidgetSensorData
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            // Sensor name
-            Text(sensor.name)
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundColor(.primary)
-                .lineLimit(1)
-            
-            // Current value - large and prominent
-            HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text(sensor.currentValue)
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(.blue)
+        HStack(alignment: .center, spacing: 4) {
+            // Name and Value
+            VStack(alignment: .leading, spacing: 0) {
+                Text(sensor.name)
+                    .font(.caption2)
+                    .fontWeight(.medium)
+                    .lineLimit(1)
+                    .foregroundColor(.secondary)
                 
-                if !sensor.units.isEmpty {
+                HStack(alignment: .firstTextBaseline, spacing: 2) {
+                    Text(sensor.currentValue)
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .foregroundColor(.primary)
+                    
                     Text(sensor.units)
-                        .font(.caption)
+                        .font(.caption2)
                         .foregroundColor(.secondary)
                 }
-                
-                Spacer()
             }
             
-            // Min/Max for last 24h
-            HStack(spacing: 12) {
-                HStack(spacing: 4) {
-                    Image(systemName: "arrow.down")
-                        .font(.caption2)
-                    Text(sensor.min24h)
-                        .font(.caption2)
-                }
-                .foregroundColor(.blue.opacity(0.7))
-                
-                HStack(spacing: 4) {
+            Spacer()
+            
+            // Min/Max
+            VStack(alignment: .trailing, spacing: 1) {
+                HStack(spacing: 2) {
                     Image(systemName: "arrow.up")
-                        .font(.caption2)
+                        .font(.system(size: 8))
                     Text(sensor.max24h)
-                        .font(.caption2)
+                        .font(.system(size: 9))
                 }
-                .foregroundColor(.red.opacity(0.7))
+                .foregroundColor(.red.opacity(0.8))
                 
-                Spacer()
+                HStack(spacing: 2) {
+                    Image(systemName: "arrow.down")
+                        .font(.system(size: 8))
+                    Text(sensor.min24h)
+                        .font(.system(size: 9))
+                }
+                .foregroundColor(.blue.opacity(0.8))
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
@@ -153,11 +151,11 @@ struct SenseiWidget: Widget {
         }
         .configurationDisplayName("Sensor Monitor")
         .description("Monitor up to 3 sensors with current values and 24h min/max.")
-        .supportedFamilies([.systemMedium])
+        .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
 
-#Preview(as: .systemMedium) {
+#Preview(as: .systemSmall) {
     SenseiWidget()
 } timeline: {
     SenseiWidgetEntry(
