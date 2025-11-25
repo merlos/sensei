@@ -45,7 +45,7 @@ def index
     end
 
     page = params[:page].to_i > 0 ? params[:page].to_i : 1
-    per_page = params[:per].to_i > 0 ? [params[:per].to_i, 100].min : 50
+    per_page = params[:per].to_i > 0 ? [params[:per].to_i, 1000].min : 50
     data = data.order(created_at: :desc).offset((page - 1) * per_page).limit(per_page)
 
     render json: data

@@ -1,3 +1,8 @@
 secrets.h
 server/config/credentials/production.yml.enc
 server/config/credentials.yml.enc
+
+# Xcode user-specific files
+*.xcuserstate
+xcuserdata/
+ios/Sensei/Sensei.xcodeproj/project.xcworkspace/xcuserdata/merlos.xcuserdatad/UserInterfaceState.xcuserstate
