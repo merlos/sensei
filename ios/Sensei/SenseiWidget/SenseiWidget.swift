@@ -76,14 +76,16 @@ struct SenseiWidgetView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                ForEach(entry.sensors.prefix(3)) { sensor in
-                    SensorWidgetRow(sensor: sensor)
+                let sensors = Array(entry.sensors.prefix(3))
+                ForEach(Array(sensors.enumerated()), id: \.offset) { item in
+                    SensorWidgetRow(sensor: item.element)
                     
-                    if sensor.id != entry.sensors.last?.id {
+                    if item.offset < sensors.count - 1 {
                         Divider()
                             .padding(.horizontal, 8)
                     }
                 }
+                Spacer()
             }
         }
         .containerBackground(.fill.tertiary, for: .widget)
