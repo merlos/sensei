@@ -397,7 +397,8 @@ struct SensorDetailView: View {
     
     private func selectDataPoint(at location: CGPoint, in geometry: GeometryProxy, chartProxy: ChartProxy) {
         // Get the x position relative to the plot area
-        let xPosition = location.x - geometry[chartProxy.plotAreaFrame].origin.x
+        guard let plotFrame = chartProxy.plotFrame else {    return }
+        let xPosition = location.x - geometry[plotFrame].origin.x
         
         // Convert x position to date
         guard let date: Date = chartProxy.value(atX: xPosition) else { return }

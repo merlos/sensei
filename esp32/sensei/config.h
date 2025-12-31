@@ -17,7 +17,12 @@
 
 // Define the DHT11 sensor pin and type
 #define DHT_PIN 4        // GPIO pin where DHT11 data pin is connected
-#define DHT_TYPE DHT22   // DHT sensor type
+#define DHT_TYPE DHT11   // DHT sensor type
+
+#define SENSOR_POSTFIX "_ext"
+
+// If > 0 it will power on the pin during loop
+#define DHT_POWER_PIN 16
 
 // Onboard blue led pin
 #define INFO_LED 2
@@ -27,7 +32,7 @@
 
 // HTTPS
 //#define SERVER_URL "https://httpbin.org/post"
-#define SERVER_URL "http://192.168.2.1:3000/sensor_data"
+#define SERVER_URL "http://192.168.1.1:3000/sensor_data"
 
 // Amazon Root CA 1 - Root certificate for httpbin.org
 #define ROOT_CA \

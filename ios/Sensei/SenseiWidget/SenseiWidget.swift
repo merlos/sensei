@@ -14,6 +14,7 @@ struct SenseiWidgetEntry: TimelineEntry {
 }
 
 struct SenseiWidgetProvider: TimelineProvider {
+    
     func placeholder(in context: Context) -> SenseiWidgetEntry {
         SenseiWidgetEntry(
             date: Date(),
@@ -23,9 +24,9 @@ struct SenseiWidgetProvider: TimelineProvider {
                     code: "temp",
                     name: "Temperature",
                     units: "°C",
-                    currentValue: "22.5",
-                    min24h: "18.0",
-                    max24h: "25.0",
+                    currentValue: 22.5,
+                    min24h: 18.0,
+                    max24h: 25.0,
                     lastUpdated: Date()
                 )
             ]
@@ -33,26 +34,55 @@ struct SenseiWidgetProvider: TimelineProvider {
     }
     
     func getSnapshot(in context: Context, completion: @escaping (SenseiWidgetEntry) -> Void) {
-        let sensors = WidgetDataManager.shared.loadWidgetData()
-        let entry = SenseiWidgetEntry(date: Date(), sensors: Array(sensors.prefix(3)))
+        let sensors = WidgetStorage.shared.loadSensorData()
+        let entry = SenseiWidgetEntry(date: Date(), sensors: Array(sensors.prefix(2)))
         completion(entry)
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<SenseiWidgetEntry>) -> Void) {
-        let sensors = WidgetDataManager.shared.loadWidgetData()
-        let config = WidgetDataManager.shared.loadConfiguration()
+        print("[Widget] getTimeline called")
         
-        // Filter to only show selected sensors
-        let selectedSensors = sensors.filter { config.selectedSensorCodes.contains($0.code) }
-        let displaySensors = Array(selectedSensors.prefix(3))
+        // Check if we have valid configuration
+        let config = WidgetStorage.shared.loadConfiguration()
         
-        let entry = SenseiWidgetEntry(date: Date(), sensors: displaySensors)
+        guard !config.serverURL.isEmpty && !config.token.isEmpty else {
+            print("[Widget] No API configuration - showing empty state")
+            let entry = SenseiWidgetEntry(date: Date(), sensors: [])
+            let timeline = Timeline(entries: [entry], policy: .after(Date().addingTimeInterval(60)))
+            completion(timeline)
+            return
+        }
         
-        // Update every 15 minutes
-        let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
-        let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
+        guard !config.selectedSensorCodes.isEmpty else {
+            print("[Widget] No sensors selected - showing empty state")
+            let entry = SenseiWidgetEntry(date: Date(), sensors: [])
+            let timeline = Timeline(entries: [entry], policy: .after(Date().addingTimeInterval(60)))
+            completion(timeline)
+            return
+        }
         
-        completion(timeline)
+        // Fetch fresh data from API
+        Task {
+            print("[Widget] Fetching data for sensors: \(config.selectedSensorCodes)")
+            let apiService = WidgetAPIService(serverURL: config.serverURL, token: config.token)
+            let sensors = await apiService.fetchWidgetData(for: config.selectedSensorCodes)
+            
+            // Save fetched data for quick access
+            if !sensors.isEmpty {
+                WidgetStorage.shared.saveSensorData(sensors)
+            }
+            
+            // Use fetched data or fallback to cached
+            let displaySensors = sensors.isEmpty ? WidgetStorage.shared.loadSensorData() : sensors
+            let entry = SenseiWidgetEntry(date: Date(), sensors: Array(displaySensors.prefix(2)))
+            
+            // Update every 5 minutes
+            let nextUpdate = Calendar.current.date(byAdding: .minute, value: 5, to: Date())!
+            let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
+            
+            print("[Widget] Timeline created with \(displaySensors.count) sensors, next update: \(nextUpdate)")
+            completion(timeline)
+        }
     }
 }
 
@@ -60,8 +90,25 @@ struct SenseiWidgetView: View {
     var entry: SenseiWidgetEntry
     @Environment(\.widgetFamily) var family
     
+    private var lastUpdateTime: String {
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        return "At \(formatter.string(from: entry.date))"
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
+            // Header with last update time
+            HStack {
+                Text(lastUpdateTime)
+                    .font(.caption2)
+                    .foregroundColor(.secondary.opacity(0.8))
+                Spacer()
+            }
+            .padding(.horizontal, 8)
+            .padding(.top, 4)
+            .padding(.bottom, 2)
+            
             if entry.sensors.isEmpty {
                 VStack(spacing: 8) {
                     Image(systemName: "thermometer.medium")
@@ -76,7 +123,7 @@ struct SenseiWidgetView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                let sensors = Array(entry.sensors.prefix(3))
+                let sensors = Array(entry.sensors.prefix(2))
                 ForEach(Array(sensors.enumerated()), id: \.offset) { item in
                     SensorWidgetRow(sensor: item.element)
                     
@@ -98,48 +145,48 @@ struct SensorWidgetRow: View {
     var body: some View {
         HStack(alignment: .center, spacing: 4) {
             // Name and Value
-            VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(sensor.name)
-                    .font(.caption2)
+                    .font(.caption)
                     .fontWeight(.medium)
-                    .lineLimit(1)
+                    .lineLimit(2)
                     .foregroundColor(.secondary)
                 
-                HStack(alignment: .firstTextBaseline, spacing: 2) {
-                    Text(sensor.currentValue)
-                        .font(.headline)
+                HStack(alignment: .center, spacing: 2) {
+                    Text(String(format: "%.1f", sensor.currentValue))
+                        .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(.primary)
                     
                     Text(sensor.units)
-                        .font(.caption2)
+                        .font(.caption)
                         .foregroundColor(.secondary)
+                    
+                    Spacer()
+                    
+                    // Min/Max aligned with value
+                    VStack(alignment: .trailing, spacing: 1) {
+                        HStack(spacing: 2) {
+                            Image(systemName: "arrow.up")
+                                .font(.system(size: 10))
+                            Text(sensor.maxFormatted)
+                                .font(.system(size: 11))
+                        }
+                        .foregroundColor(.red.opacity(0.8))
+                        
+                        HStack(spacing: 2) {
+                            Image(systemName: "arrow.down")
+                                .font(.system(size: 10))
+                            Text(sensor.minFormatted)
+                                .font(.system(size: 11))
+                        }
+                        .foregroundColor(.blue.opacity(0.8))
+                    }
                 }
-            }
-            
-            Spacer()
-            
-            // Min/Max
-            VStack(alignment: .trailing, spacing: 1) {
-                HStack(spacing: 2) {
-                    Image(systemName: "arrow.up")
-                        .font(.system(size: 8))
-                    Text(sensor.max24h)
-                        .font(.system(size: 9))
-                }
-                .foregroundColor(.red.opacity(0.8))
-                
-                HStack(spacing: 2) {
-                    Image(systemName: "arrow.down")
-                        .font(.system(size: 8))
-                    Text(sensor.min24h)
-                        .font(.system(size: 9))
-                }
-                .foregroundColor(.blue.opacity(0.8))
             }
         }
         .padding(.horizontal, 8)
-        .padding(.vertical, 4)
+        .padding(.vertical, 6)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
@@ -152,7 +199,7 @@ struct SenseiWidget: Widget {
             SenseiWidgetView(entry: entry)
         }
         .configurationDisplayName("Sensor Monitor")
-        .description("Monitor up to 3 sensors with current values and 24h min/max.")
+        .description("Monitor up to 2 sensors with current values and 24h min/max.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
@@ -168,9 +215,9 @@ struct SenseiWidget: Widget {
                 code: "temp",
                 name: "Temperature",
                 units: "°C",
-                currentValue: "22.5",
-                min24h: "18.0",
-                max24h: "25.0",
+                currentValue: 22.5,
+                min24h: 18.0,
+                max24h: 25.0,
                 lastUpdated: Date()
             ),
             WidgetSensorData(
@@ -178,19 +225,9 @@ struct SenseiWidget: Widget {
                 code: "humidity",
                 name: "Humidity",
                 units: "%",
-                currentValue: "65",
-                min24h: "55",
-                max24h: "75",
-                lastUpdated: Date()
-            ),
-            WidgetSensorData(
-                id: 3,
-                code: "heat",
-                name: "Heat Index",
-                units: "°C",
-                currentValue: "24.1",
-                min24h: "19.5",
-                max24h: "26.8",
+                currentValue: 65,
+                min24h: 55,
+                max24h: 75,
                 lastUpdated: Date()
             )
         ]

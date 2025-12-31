@@ -25,7 +25,7 @@ struct SensorListView: View {
                     NavigationLink(destination: SensorDetailView(
                         configManager: configManager,
                         apiService: apiService,
-                        sensor: sensorWithData.sensor
+                        sensor: sensorWithData.sensor!
                     )) {
                         SensorRowView(sensorWithData: sensorWithData)
                     }
