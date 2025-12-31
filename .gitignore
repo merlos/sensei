@@ -5,6 +5,6 @@ server/config/credentials.yml.enc
 # Xcode user-specific files
 *.xcuserstate
 xcuserdata/
-ios/Sensei/Sensei.xcodeproj/project.xcworkspace/xcuserdata/merlos.xcuserdatad/UserInterfaceState.xcuserstate
+ios/Sensei/Sensei.xcodeproj/project.xcworkspace/xcuserdata
 .DS_Store
 ios/Sensei/Sensei.xcodeproj/xcuserdata/merlos.xcuserdatad/xcschemes/xcschememanagement.plist
