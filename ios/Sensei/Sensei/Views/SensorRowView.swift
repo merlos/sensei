@@ -14,7 +14,7 @@ struct SensorRowView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text(sensorWithData.sensor.name)
+                Text(sensorWithData.name)
                     .font(.headline)
                     .foregroundColor(.primary)
                 
@@ -27,14 +27,14 @@ struct SensorRowView: View {
             }
             
             HStack {
-                Text("Code: \(sensorWithData.sensor.code)")
+                Text("Code: \(sensorWithData.code)")
                     .font(.caption)
                     .foregroundColor(.secondary)
                 
                 Spacer()
                 
-                if let data = sensorWithData.latestData {
-                    Text("Sensor data updated: \(formatDate(data.updatedAt))")
+                if !sensorWithData.dataPoints.isEmpty {
+                    Text("Sensor data updated: \(formatDate(sensorWithData.lastUpdated))")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -43,14 +43,9 @@ struct SensorRowView: View {
         .padding(.vertical, 4)
     }
     
-    private func formatDate(_ dateString: String) -> String {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        if let date = formatter.date(from: dateString) {
-            let relativeFormatter = RelativeDateTimeFormatter()
-            relativeFormatter.unitsStyle = .full
-            return relativeFormatter.localizedString(for: date, relativeTo: Date())
-        }
-        return dateString
+    private func formatDate(_ date: Date) -> String {
+        let relativeFormatter = RelativeDateTimeFormatter()
+        relativeFormatter.unitsStyle = .full
+        return relativeFormatter.localizedString(for: date, relativeTo: Date())
     }
 }

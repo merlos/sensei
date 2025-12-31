@@ -84,8 +84,7 @@ struct ContentView: View {
             }
             .sheet(isPresented: $showingWidgetConfiguration) {
                 WidgetConfigurationView(
-                    dataManager: dataManager,
-                    apiService: apiService
+                    configManager: configManager
                 )
             }
         }

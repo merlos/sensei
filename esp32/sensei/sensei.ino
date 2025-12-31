@@ -66,12 +66,24 @@ void setup() {
   // Wait a moment for sensor to stabilize
   delay(2000);
   
+  if (DHT_POWER_PIN > 0) {
+    Serial.println("Using ping as power mode");
+    pinMode(DHT_POWER_PIN, OUTPUT);
+    digitalWrite(DHT_POWER_PIN, LOW);
+  }
+  
+
   // Make HTTPS request
   //makeHTTPSRequest();
 }
 
 void loop() {
   
+  // Set the DHTPowerpin
+  if (DHT_POWER_PIN > 0) {
+    digitalWrite(DHT_POWER_PIN, HIGH);
+    delay(1000); // wait to stabilize
+  }
   // Read humidity and temperature
   float humidity = dht.readHumidity();
   float temperature = dht.readTemperature(); //
@@ -105,16 +117,21 @@ void loop() {
   Serial.println("───────────────SENSOR READ───────────────");
   
   // JSON payload
-  
-  SensorData humidityData = { "humidity",  String(humidity).c_str()};
-  SensorData temperatureData = { "temperature",  String(temperature).c_str()};
-  SensorData heatIndexData = { "heat_index",  String(heatIndex).c_str()};
+    
+  SensorData humidityData = { (String("humidity") + SENSOR_POSTFIX).c_str(), String(humidity).c_str()};
+  SensorData temperatureData = { (String("temperature") + SENSOR_POSTFIX).c_str(), String(temperature).c_str()};
+  SensorData heatIndexData = { (String("heat_index") + SENSOR_POSTFIX).c_str(), String(heatIndex).c_str()};
 
   makeHTTPSPOST(buildPayload(humidityData));
   makeHTTPSPOST(buildPayload(temperatureData));
   makeHTTPSPOST(buildPayload(heatIndexData));
-  digitalWrite(INFO_LED, LOW);
+  
+  if (DHT_POWER_PIN > 0) {
+    digitalWrite(DHT_POWER_PIN, LOW);
+    delay(1000); // wait to stabilize
+  }
 
+  digitalWrite(INFO_LED, LOW);
   // Sleep mode
   //delay(SLEEP_SECONDS * 1000); // Wait between requests
   esp_sleep_enable_timer_wakeup(SLEEP_SECONDS * 1000000); // microseconds 
