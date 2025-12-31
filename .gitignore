@@ -7,3 +7,4 @@ server/config/credentials.yml.enc
 xcuserdata/
 ios/Sensei/Sensei.xcodeproj/project.xcworkspace/xcuserdata/merlos.xcuserdatad/UserInterfaceState.xcuserstate
 .DS_Store
+ios/Sensei/Sensei.xcodeproj/xcuserdata/merlos.xcuserdatad/xcschemes/xcschememanagement.plist
