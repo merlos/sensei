@@ -9,6 +9,7 @@
 import Foundation
 import SwiftUI
 import SwiftData
+import Combine
 
 @MainActor
 class ConfigurationManager: ObservableObject {
@@ -52,6 +53,17 @@ class ConfigurationManager: ObservableObject {
         // Create new configuration
         let newConfig = Configuration(serverURL: serverURL, token: token)
         modelContext.insert(newConfig)
+        
+        // Also update widget configuration with new API credentials if sensors are selected
+        let widgetConfig = WidgetStorage.shared.loadConfiguration()
+        if !widgetConfig.selectedSensorCodes.isEmpty {
+            let updatedConfig = SensorWidgetConfig(
+                selectedSensorCodes: widgetConfig.selectedSensorCodes,
+                serverURL: serverURL,
+                token: token
+            )
+            WidgetStorage.shared.saveConfiguration(updatedConfig)
+        }
         
         do {
             try modelContext.save()

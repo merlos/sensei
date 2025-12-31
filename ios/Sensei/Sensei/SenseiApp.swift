@@ -3,6 +3,7 @@ import SwiftData
 
 @main
 struct SenseiApp: App {
+    
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Sensor.self,
