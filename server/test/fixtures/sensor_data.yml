@@ -1,9 +1,9 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  sensor_code: MyString
-  value: MyString
+  sensor_code: fixture_sensor_one
+  value: "25.0"
 
 two:
-  sensor_code: MyString
-  value: MyString
+  sensor_code: fixture_sensor_two
+  value: "50.0"
