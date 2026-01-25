@@ -91,7 +91,7 @@ void loop() {
   // Check if readings are valid
   if (isnan(humidity) || isnan(temperature)) {
     Serial.println("Failed to read from DHT sensor!");
-    //blink_delay();
+    delay(5000);
     return;
   }
   // Calculate heat index (feels like temperature)
