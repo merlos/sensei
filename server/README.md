@@ -175,7 +175,7 @@ Then run
  ```
 This will upload the image to the registry it generates only an `amd64` architecture image.
 
-Note that the docker image will include all the `config/credentials/*.yaml.enc` files available in the machine running the script.
+Note that the docker image will include all the `config/credentials/*.yaml.enc` files available in the machine running the script. (for example, mine includes one for testing called `production.yaml.enc`, which has to be overwritten.)
 
 # API Endpoints
 
