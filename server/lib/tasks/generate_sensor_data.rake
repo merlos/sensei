@@ -18,7 +18,7 @@ namespace :sensor_data do
 
     # Sensor 1: Temperature with 24h cycle (daily variation)
     # Peaks at 2pm (14:00), lowest at 2am
-    temp_sensor = Sensor.find_or_create_by!(code: "temperature_test") do |s|
+    temp_sensor = Sensor.find_or_create_by!(code: "temperature_kitchen") do |s|
       s.name = "Temperature Test"
       s.units = "°C"
       s.value_type = "float"
@@ -27,7 +27,7 @@ namespace :sensor_data do
     # Sensor 2: Humidity with 24h + 7-day cycle (daily + weekly variation)
     # Daily: Higher at night, lower during day (inverse of temperature)
     # Weekly: Higher on weekends (less HVAC activity)
-    humidity_sensor = Sensor.find_or_create_by!(code: "humidity_test") do |s|
+    humidity_sensor = Sensor.find_or_create_by!(code: "humidity_kitchen") do |s|
       s.name = "Humidity Test"
       s.units = "%"
       s.value_type = "float"
@@ -119,7 +119,7 @@ namespace :sensor_data do
 
   desc "Clear generated test sensor data"
   task clear: :environment do
-    test_codes = %w[temperature_test humidity_test]
+    test_codes = %w[temperature_kitchen humidity_kitchen]
     deleted_data = SensorDatum.where(sensor_code: test_codes).delete_all
     deleted_sensors = Sensor.where(code: test_codes).delete_all
     puts "✓ Deleted #{deleted_data} data points and #{deleted_sensors} sensors"

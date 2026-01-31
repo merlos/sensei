@@ -58,8 +58,8 @@ rails sensor_data:clear
 ```
 
 This creates two test sensors:
-- `temperature_test`: 24h sine wave (18-26°C, peaks at 2pm)
-- `humidity_test`: 24h + 7-day sine waves (30-80%, daily + weekly variation)
+- `temperature_kitchen`: 24h sine wave (18-26°C, peaks at 2pm)
+- `humidity_kitchen`: 24h + 7-day sine waves (30-80%, daily + weekly variation)
 
 ## Test sending sensor data
 
