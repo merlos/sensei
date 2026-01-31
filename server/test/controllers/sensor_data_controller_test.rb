@@ -551,8 +551,9 @@ class SensorDataControllerTest < ActionDispatch::IntegrationTest
         Sensor.find_or_create_by!(code: "daily_last_month", name: "Daily Last Month", units: "C", value_type: "float")
         now = Time.current
         # Create data points across multiple days
-        SensorDatum.create!(sensor_code: "daily_last_month", value: "20.0", created_at: now - 5.days)
-        SensorDatum.create!(sensor_code: "daily_last_month", value: "21.0", created_at: now - 5.days + 6.hours)
+        day_5_ago = (now - 5.days).beginning_of_day + 10.hours  # 10am on day 5 ago
+        SensorDatum.create!(sensor_code: "daily_last_month", value: "20.0", created_at: day_5_ago)
+        SensorDatum.create!(sensor_code: "daily_last_month", value: "21.0", created_at: day_5_ago + 2.hours)  # Same day, 12pm
         SensorDatum.create!(sensor_code: "daily_last_month", value: "25.0", created_at: now - 10.days)
         SensorDatum.create!(sensor_code: "daily_last_month", value: "22.0", created_at: now - 20.days)
         # This one should be excluded (older than 30 days)
