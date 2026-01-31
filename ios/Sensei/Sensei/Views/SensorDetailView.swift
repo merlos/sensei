@@ -25,8 +25,6 @@ struct SensorDetailView: View {
     // Computed properties for chart formatting
     private var xAxisFormat: Date.FormatStyle {
         switch selectedTimeRange {
-        case .hour:
-            return .dateTime.hour().minute()
         case .day:
             return .dateTime.hour().minute()
         case .week:
@@ -41,7 +39,6 @@ struct SensorDetailView: View {
     }
     
     enum TimeRange: String, CaseIterable {
-        case hour = "Last Hour"
         case day = "Last Day"
         case week = "Last Week"
         case month = "Last Month"
@@ -51,8 +48,6 @@ struct SensorDetailView: View {
         var dateInterval: DateInterval? {
             let now = Date()
             switch self {
-            case .hour:
-                return DateInterval(start: Calendar.current.date(byAdding: .hour, value: -1, to: now)!, end: now)
             case .day:
                 return DateInterval(start: Calendar.current.date(byAdding: .day, value: -1, to: now)!, end: now)
             case .week:
