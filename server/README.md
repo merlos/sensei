@@ -22,11 +22,39 @@ Edit the credentials:
 EDITOR="nano" bin/rails credentials:edit --environment development
 ```
 
-Modify the line to set the same value in the `bearer_token` as in the file `esp32/sensei/secrets.h`:
+Modify the credentials to set the authentication tokens. The `bearer_token` must be the same as in the file `esp32/sensei/secrets.h`:
 
 ```yaml
 sensor_api:
-  bearer_token: my-secret-token-123
+  bearer_token: "your-secret-token"
+  dashboard_username: "your-custom-username"  # Optional (defaults to "sensei")
+  dashboard_password: "your-dashboard-password"  # Optional (defaults to bearer_token)
+```
+
+### Dashboard Authentication
+
+The web dashboard uses HTTP Basic Authentication in production:
+
+- **Username**: Set via `dashboard_username` credential (defaults to `"sensei"`)
+- **Password**: Set via `dashboard_password` credential (defaults to `bearer_token`)
+- **Development**: Authentication is disabled for convenience
+
+This allows you to use different credentials for:
+- **API access** (ESP32, iOS app): Uses `bearer_token` in Authorization header
+- **Web dashboard**: Uses `dashboard_username`/`dashboard_password` for HTTP Basic Auth
+
+Example configurations:
+```yaml
+# Minimal - uses defaults
+sensor_api:
+  bearer_token: "esp32-secret-123"
+  # Dashboard: username="sensei", password="esp32-secret-123"
+
+# Separate dashboard credentials
+sensor_api:
+  bearer_token: "esp32-secret-123"        # For API access
+  dashboard_username: "admin"             # For web dashboard  
+  dashboard_password: "web-admin-456"     # For web dashboard
 ```
 
 Perform the migrations in the database:
@@ -40,6 +68,7 @@ Launch the server:
 ```sh
 rails server
 ```
+
 
 ## Generate synthetic sensor data
 
@@ -85,11 +114,13 @@ The first step is to create the production credentials
 ```sh
 EDITOR=nano bin/rails credentials:edit --environment production
 ```
-and add the `sensor_api` pre-shared secret for production (replace with your bearer token which must be the same in the esp32)
+and add the `sensor_api` credentials for production (replace with your tokens):
 
 ```yaml
 sensor_api:
-  bearer_token: my-secret-token-123
+  bearer_token: "my-secret-token-123"         # For ESP32/iOS API access
+  dashboard_username: "admin"                 # Optional web dashboard username
+  dashboard_password: "secure-web-password"   # Optional web dashboard password
 ```
 
 As a result you have the following two files:

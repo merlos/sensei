@@ -5,9 +5,15 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # Web UI Dashboard
+  root "dashboard#index"
+  get "dashboard", to: "dashboard#index", as: :dashboard
+  get "dashboard/sensor/:code", to: "dashboard#sensor", as: :dashboard_sensor
 
+  # ============================================
+  # API Endpoints (require Bearer token auth)
+  # ============================================
+  
   # config/routes.rb
   post '/sensor_data', to: 'sensor_data#create'
   get '/sensors', to: 'sensors#index' 

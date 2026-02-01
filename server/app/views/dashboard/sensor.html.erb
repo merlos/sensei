@@ -1,0 +1,52 @@
+<% content_for(:title) { "#{@sensor.name} - Sensei" } %>
+
+<p><%= link_to "← Back to Dashboard", dashboard_path %></p>
+
+<h1><%= @sensor.name %></h1>
+
+<div class="grid grid-4 mb-lg">
+  <div class="card">
+    <h4 class="text-secondary mt-0">Code</h4>
+    <code><%= @sensor.code %></code>
+  </div>
+  
+  <div class="card">
+    <h4 class="text-secondary mt-0">Units</h4>
+    <p class="mb-0"><%= @sensor.units.presence || "—" %></p>
+  </div>
+  
+  <div class="card">
+    <h4 class="text-secondary mt-0">Value Type</h4>
+    <p class="mb-0"><%= @sensor.value_type %></p>
+  </div>
+  
+  <div class="card">
+    <h4 class="text-secondary mt-0">Total Readings</h4>
+    <p class="mb-0"><%= number_with_delimiter(SensorDatum.where(sensor_code: @sensor.code).count) %></p>
+  </div>
+</div>
+
+<h2>Recent Readings (Last 100)</h2>
+
+<% if @readings.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Value</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @readings.each do |reading| %>
+        <tr>
+          <td><strong><%= reading.value %></strong> <%= @sensor.units %></td>
+          <td class="text-secondary"><%= reading.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="card text-center">
+    <p class="text-secondary">No readings for this sensor yet.</p>
+  </div>
+<% end %>

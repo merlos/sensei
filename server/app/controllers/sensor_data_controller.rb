@@ -1,5 +1,5 @@
 # app/controllers/sensor_data_controller.rb
-class SensorDataController < ApplicationController
+class SensorDataController < ApiController
 
   def create
     sensor_code = params[:sensor_code]

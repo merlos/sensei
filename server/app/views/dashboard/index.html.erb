@@ -1,0 +1,98 @@
+<% content_for(:title) { "Sensei Dashboard" } %>
+
+<h1>📊 Sensei Dashboard</h1>
+
+<div class="grid grid-3 mb-lg">
+  <div class="card">
+    <h3 class="text-secondary mt-0">Total Sensors</h3>
+    <p style="font-size: 2.5rem; font-weight: bold; margin: 0;"><%= @sensors.count %></p>
+  </div>
+  
+  <div class="card">
+    <h3 class="text-secondary mt-0">Total Readings</h3>
+    <p style="font-size: 2.5rem; font-weight: bold; margin: 0;"><%= number_with_delimiter(@total_readings) %></p>
+  </div>
+  
+  <div class="card">
+    <h3 class="text-secondary mt-0">API Status</h3>
+    <p style="font-size: 2.5rem; font-weight: bold; margin: 0; color: var(--color-success);">● Online</p>
+  </div>
+</div>
+
+<h2>Sensors</h2>
+
+<% if @sensors.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Code</th>
+        <th>Units</th>
+        <th>Value Type</th>
+        <th>Latest Value</th>
+        <th>Last Updated</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sensors.each do |sensor| %>
+        <% latest = SensorDatum.where(sensor_code: sensor.code).order(created_at: :desc).first %>
+        <tr>
+          <td><strong><%= sensor.name %></strong></td>
+          <td><code><%= sensor.code %></code></td>
+          <td><%= sensor.units.presence || "—" %></td>
+          <td><%= sensor.value_type %></td>
+          <td>
+            <% if latest %>
+              <strong><%= latest.value %></strong> <%= sensor.units %>
+            <% else %>
+              <span class="text-secondary">No data</span>
+            <% end %>
+          </td>
+          <td>
+            <% if latest %>
+              <span class="text-secondary"><%= time_ago_in_words(latest.created_at) %> ago</span>
+            <% else %>
+              —
+            <% end %>
+          </td>
+          <td>
+            <%= link_to "View →", dashboard_sensor_path(sensor.code), class: "btn btn-primary" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="card text-center">
+    <p class="text-secondary">No sensors found. Send some data from your ESP32!</p>
+    <p><code>POST /sensor_data</code> with <code>{"sensor_code": "...", "value": "..."}</code></p>
+  </div>
+<% end %>
+
+<h2 class="mt-lg">Recent Readings</h2>
+
+<% if @latest_readings.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Sensor</th>
+        <th>Value</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @latest_readings.each do |reading| %>
+        <tr>
+          <td><code><%= reading.sensor_code %></code></td>
+          <td><strong><%= reading.value %></strong></td>
+          <td class="text-secondary"><%= reading.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="card text-center">
+    <p class="text-secondary">No readings yet.</p>
+  </div>
+<% end %>
