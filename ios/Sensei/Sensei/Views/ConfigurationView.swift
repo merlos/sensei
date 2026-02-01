@@ -7,9 +7,11 @@
 
 
 import SwiftUI
+import SwiftData
 
 struct ConfigurationView: View {
     @ObservedObject var configManager: ConfigurationManager
+    @Environment(\.modelContext) private var modelContext
     @State private var tempServerURL: String = ""
     @State private var tempToken: String = ""
     @State private var showingToken = false
@@ -17,13 +19,18 @@ struct ConfigurationView: View {
     @State private var isValidating = false
     @State private var serverChecked = false
     @State private var tokenChecked = false
+    @State private var showingClearDataAlert = false
     @Environment(\.dismiss) private var dismiss
+    
+    // Data statistics
+    @Query private var sensors: [Sensor]
+    @Query private var sensorData: [SensorData]
     
     var body: some View {
         Form {
             Section(header: Text("Server Configuration")) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Server addreess")
+                    Text("Server address")
                         .font(.headline)
                     TextField("http://domain.com:1234", text: $tempServerURL)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -54,9 +61,7 @@ struct ConfigurationView: View {
                     }
                 }
                 .padding(.vertical, 4)
-            }
-            
-            Section {
+                
                 Button(action: checkConfiguration) {
                     HStack {
                         if isValidating {
@@ -72,12 +77,45 @@ struct ConfigurationView: View {
                     .cornerRadius(10)
                 }
                 .disabled(!isValidConfiguration || isValidating)
+                .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
+                .listRowBackground(Color.clear)
                 
                 if !validationMessage.isEmpty {
                     Text(validationMessage)
                         .font(.caption)
                         .foregroundColor(serverChecked && tokenChecked ? .green : .red)
                         .padding(.top, 4)
+                }
+            }
+            
+            // Only show Data section if configuration already exists (not first launch)
+            if configManager.currentConfiguration != nil {
+                Section(header: Text("Stored Data")) {
+                    HStack {
+                        Text("Sensors")
+                        Spacer()
+                        Text("\(sensors.count)")
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    HStack {
+                        Text("Sensor Data Points")
+                        Spacer()
+                        Text("\(sensorData.count)")
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    Button(action: {
+                        showingClearDataAlert = true
+                    }) {
+                        HStack {
+                            Image(systemName: "trash")
+                            Text("Clear Sensor Data")
+                        }
+                        .foregroundColor(.red)
+                        .frame(maxWidth: .infinity)
+                    }
+                    .disabled(sensors.isEmpty && sensorData.isEmpty)
                 }
             }
         }
@@ -101,11 +139,34 @@ struct ConfigurationView: View {
             tempServerURL = configManager.currentConfiguration?.serverURL ?? ""
             tempToken = configManager.currentConfiguration?.token ?? ""
         }
+        .alert("Clear Sensor Data", isPresented: $showingClearDataAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Clear", role: .destructive) {
+                clearSensorData()
+            }
+        } message: {
+            Text("This will permanently delete all sensors and their data points. Your server configuration will be kept. This action cannot be undone.")
+        }
     }
     
     private var isValidConfiguration: Bool {
         !tempServerURL.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         !tempToken.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+    
+    private func clearSensorData() {
+        // Delete all sensors (will cascade to delete sensor data due to relationship)
+        for sensor in sensors {
+            modelContext.delete(sensor)
+        }
+        
+        // Delete any orphaned sensor data (not linked to a sensor)
+        for data in sensorData {
+            modelContext.delete(data)
+        }
+        
+        // Save changes
+        try? modelContext.save()
     }
     
     private func checkConfiguration() {

@@ -21,7 +21,7 @@ class ConfigurationManager: ObservableObject {
         loadConfiguration()
     }
     
-    private func loadConfiguration() {
+    func loadConfiguration() {
         guard let modelContext = modelContext else { return }
         
         let descriptor = FetchDescriptor<Configuration>(
