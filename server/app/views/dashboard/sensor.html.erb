@@ -2,22 +2,60 @@
 
 <p><%= link_to "← Back to Dashboard", dashboard_path %></p>
 
-<h1><%= @sensor.name %></h1>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+  <input type="text"
+    value="<%= @sensor.name %>"
+    class="editable-input editable-h1"
+    data-controller="inline-edit"
+    data-inline-edit-url-value="<%= update_dashboard_sensor_path(@sensor.code) %>"
+    data-inline-edit-field-value="name"
+    data-action="blur->inline-edit#blur keydown->inline-edit#keydown">
+  
+  <span 
+    class="delete-btn always-visible"
+    data-controller="delete-button"
+    data-delete-button-url-value="<%= delete_dashboard_sensor_path(@sensor.code) %>"
+    data-delete-button-confirm-message-value="Delete sensor '<%= @sensor.name %>' and all its data? This cannot be undone."
+    data-action="click->delete-button#deleteSensor"
+    title="Delete sensor"
+    style="font-size: 1.5em;">
+    🗑️
+  </span>
+</div>
 
 <div class="grid grid-4 mb-lg">
   <div class="card">
     <h4 class="text-secondary mt-0">Code</h4>
-    <code><%= @sensor.code %></code>
+    <input type="text"
+      value="<%= @sensor.code %>"
+      class="editable-input editable-code"
+      data-controller="inline-edit"
+      data-inline-edit-url-value="<%= update_dashboard_sensor_path(@sensor.code) %>"
+      data-inline-edit-field-value="code"
+      data-action="blur->inline-edit#blur keydown->inline-edit#keydown">
   </div>
   
   <div class="card">
     <h4 class="text-secondary mt-0">Units</h4>
-    <p class="mb-0"><%= @sensor.units.presence || "—" %></p>
+    <input type="text"
+      value="<%= @sensor.units %>"
+      placeholder="—"
+      class="editable-input"
+      data-controller="inline-edit"
+      data-inline-edit-url-value="<%= update_dashboard_sensor_path(@sensor.code) %>"
+      data-inline-edit-field-value="units"
+      data-action="blur->inline-edit#blur keydown->inline-edit#keydown">
   </div>
   
   <div class="card">
     <h4 class="text-secondary mt-0">Value Type</h4>
-    <p class="mb-0"><%= @sensor.value_type %></p>
+    <input type="text"
+      value="<%= @sensor.value_type %>"
+      class="editable-input"
+      data-controller="inline-edit"
+      data-inline-edit-url-value="<%= update_dashboard_sensor_path(@sensor.code) %>"
+      data-inline-edit-field-value="value_type"
+      data-action="blur->inline-edit#blur keydown->inline-edit#keydown">
   </div>
   
   <div class="card">
@@ -34,13 +72,34 @@
       <tr>
         <th>Value</th>
         <th>Timestamp</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
       <% @readings.each do |reading| %>
         <tr>
-          <td><strong><%= reading.value %></strong> <%= @sensor.units %></td>
+          <td>
+            <input type="text"
+              value="<%= reading.value %>"
+              class="editable-input editable-bold editable-value"
+              data-controller="inline-edit"
+              data-inline-edit-url-value="<%= update_dashboard_reading_path(reading.id) %>"
+              data-inline-edit-field-value="value"
+              data-action="blur->inline-edit#blur keydown->inline-edit#keydown">
+            <%= @sensor.units %>
+          </td>
           <td class="text-secondary"><%= reading.created_at.strftime("%Y-%m-%d %H:%M:%S") %></td>
+          <td>
+            <span 
+              class="delete-btn"
+              data-controller="delete-button"
+              data-delete-button-url-value="<%= destroy_dashboard_reading_path(reading.id) %>"
+              data-delete-button-confirm-message-value="Delete this reading?"
+              data-action="click->delete-button#delete"
+              title="Delete reading">
+              🗑️
+            </span>
+          </td>
         </tr>
       <% end %>
     </tbody>

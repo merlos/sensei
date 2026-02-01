@@ -9,6 +9,12 @@ Rails.application.routes.draw do
   root "dashboard#index"
   get "dashboard", to: "dashboard#index", as: :dashboard
   get "dashboard/sensor/:code", to: "dashboard#sensor", as: :dashboard_sensor
+  
+  # AJAX endpoints for inline editing
+  patch "dashboard/sensor/:code/update", to: "dashboard#update_sensor", as: :update_dashboard_sensor
+  delete "dashboard/sensor/:code", to: "dashboard#delete_sensor", as: :delete_dashboard_sensor
+  patch "dashboard/reading/:id", to: "dashboard#update_reading", as: :update_dashboard_reading
+  delete "dashboard/reading/:id", to: "dashboard#destroy_reading", as: :destroy_dashboard_reading
 
   # ============================================
   # API Endpoints (require Bearer token auth)

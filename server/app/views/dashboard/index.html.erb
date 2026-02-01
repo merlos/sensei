@@ -32,16 +32,50 @@
         <th>Latest Value</th>
         <th>Last Updated</th>
         <th></th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
       <% @sensors.each do |sensor| %>
         <% latest = SensorDatum.where(sensor_code: sensor.code).order(created_at: :desc).first %>
         <tr>
-          <td><strong><%= sensor.name %></strong></td>
-          <td><code><%= sensor.code %></code></td>
-          <td><%= sensor.units.presence || "—" %></td>
-          <td><%= sensor.value_type %></td>
+          <td>
+            <input type="text" 
+              value="<%= sensor.name %>"
+              class="editable-input editable-bold"
+              data-controller="inline-edit"
+              data-inline-edit-url-value="<%= update_dashboard_sensor_path(sensor.code) %>"
+              data-inline-edit-field-value="name"
+              data-action="blur->inline-edit#blur keydown->inline-edit#keydown">
+          </td>
+          <td>
+            <input type="text"
+              value="<%= sensor.code %>"
+              class="editable-input editable-code"
+              data-controller="inline-edit"
+              data-inline-edit-url-value="<%= update_dashboard_sensor_path(sensor.code) %>"
+              data-inline-edit-field-value="code"
+              data-action="blur->inline-edit#blur keydown->inline-edit#keydown">
+          </td>
+          <td>
+            <input type="text"
+              value="<%= sensor.units %>"
+              placeholder="—"
+              class="editable-input"
+              data-controller="inline-edit"
+              data-inline-edit-url-value="<%= update_dashboard_sensor_path(sensor.code) %>"
+              data-inline-edit-field-value="units"
+              data-action="blur->inline-edit#blur keydown->inline-edit#keydown">
+          </td>
+          <td>
+            <input type="text"
+              value="<%= sensor.value_type %>"
+              class="editable-input"
+              data-controller="inline-edit"
+              data-inline-edit-url-value="<%= update_dashboard_sensor_path(sensor.code) %>"
+              data-inline-edit-field-value="value_type"
+              data-action="blur->inline-edit#blur keydown->inline-edit#keydown">
+          </td>
           <td>
             <% if latest %>
               <strong><%= latest.value %></strong> <%= sensor.units %>
@@ -58,6 +92,17 @@
           </td>
           <td>
             <%= link_to "View →", dashboard_sensor_path(sensor.code), class: "btn btn-primary" %>
+          </td>
+          <td>
+            <span 
+              class="delete-btn"
+              data-controller="delete-button"
+              data-delete-button-url-value="<%= delete_dashboard_sensor_path(sensor.code) %>"
+              data-delete-button-confirm-message-value="Delete sensor '<%= sensor.name %>' and all its data? This cannot be undone."
+              data-action="click->delete-button#deleteSensor"
+              title="Delete sensor">
+              🗑️
+            </span>
           </td>
         </tr>
       <% end %>
