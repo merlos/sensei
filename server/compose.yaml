@@ -8,9 +8,12 @@ services:
       - .env
     environment:
       # You can set the master key as environment variable as well
-      - RAILS_MASTER_KEY
+      - RAILS_MASTER_KEY  
+      #- RAILS_ASSUME_SSL=true
+      #- RAILS_FORCE_SSL=true
     ports:
       - "3000:80"
+      - "3001:443"
     volumes:
       - ./storage:/rails/storage
       # Replace the production yaml with you own credentials file
@@ -18,3 +21,5 @@ services:
       
       # Master key as volume: alternatively you can also mount the key file
       #- ./config/credentials/production.key:/rails/config/credentials/production.key:ro
+      - ./certs/fullchain.pem:/rails/certs/fullchain.pem:ro
+      - ./certs/privkey.pem:/rails/certs/privkey.pem:ro
