@@ -134,6 +134,7 @@ void loop() {
   digitalWrite(INFO_LED, LOW);
   // Sleep mode
   //delay(SLEEP_SECONDS * 1000); // Wait between requests
+  Serial.println("Deep Sleeping for " + String(SLEEP_SECONDS) + " seconds");
   esp_sleep_enable_timer_wakeup(SLEEP_SECONDS * 1000000); // microseconds 
   esp_deep_sleep_start();
 }
