@@ -168,7 +168,6 @@ Also, this path is where the sqlite files will be kept.
 ```yaml
  - ./storage:/rails/storage
  ```
-
  
 Once, everything is setup, then launch the docker 
 
@@ -180,6 +179,20 @@ docker compose up
 # to launch in background
 docker compose up -d
 ```
+
+
+ ## Deployment using caddy as reverse proxy with SSL
+
+In your caddy file add: 
+```
+ your.domain.com {
+    header Strict-Transport-Security max-age=31536000;
+    # local ip address
+    reverse_proxy 192.168.1.1:3000 
+ }
+```
+
+Caddy will automatically manage getting the ssl. You need to have the port 80 open to the Internet. The renewal is every 3mo, so you can just open it for that period of time. 
 
 ### Troubleshooting
 
