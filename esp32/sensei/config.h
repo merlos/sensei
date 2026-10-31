@@ -16,18 +16,18 @@
 /////////////////////////////////
 
 //EXT
-//#define DHT_PIN 4       // GPIO pin where DHT11 data pin is connected
-//#define DHT_TYPE DHT11  // DHT sensor type
-//#define SENSOR_POSTFIX "ext"
+#define DHT_PIN 4       // GPIO pin where DHT11 data pin is connected
+#define DHT_TYPE DHT11  // DHT sensor type
+#define SENSOR_POSTFIX "_ext"
 // If > 0 it will power on the pin during loop
-//#define DHT_POWER_PIN 16
+#define DHT_POWER_PIN 16
 
 // INT
-#define DHT_PIN 5       // GPIO pin where DHT11 data pin is connected
-#define DHT_TYPE DHT11  // DHT sensor type 
-#define SENSOR_POSTFIX ""
+//#define DHT_PIN 5       // GPIO pin where DHT11 data pin is connected
+//#define DHT_TYPE DHT11  // DHT sensor type 
+//#define SENSOR_POSTFIX ""
 // If > 0 it will power on the pin during loop
-#define DHT_POWER_PIN 17
+//#define DHT_POWER_PIN 17
 
 
 // Onboard blue led pin
@@ -35,10 +35,10 @@
 
 // Time the microcontroler will be in deep sleep
 #define SLEEP_SECONDS 1200
-
+//#define SLEEP_SECONDS 12
 // HTTPS
 //#define SERVER_URL "https://httpbin.org/post"
-#define SERVER_URL "http://192.168.1.1:3000/sensor_data"
+#define SERVER_URL "http://192.168.4.160:3000/sensor_data"
 
 // Amazon Root CA 1 - Root certificate for httpbin.org
 #define ROOT_CA \
