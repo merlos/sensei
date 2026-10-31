@@ -108,4 +108,24 @@ class SensorAPIService: ObservableObject {
         let (data, _) = try await session.data(for: request)
         return try JSONDecoder().decode([APISensorData].self, from: data)
     }
+    
+    /// Fetch daily summaries for a sensor using the daily-last/:period endpoint
+    /// - Parameters:
+    ///   - sensorCode: The sensor code
+    ///   - period: One of: day, week, month, year, all
+    ///   - page: Page number for pagination
+    ///   - per: Items per page (max 100)
+    /// - Returns: Array of daily summaries with average, min, max, count
+    func fetchDailySummary(for sensorCode: String, period: String, page: Int = 1, per: Int = 100) async throws -> [APIDailySummary] {
+        let endpoint = "sensor_data/\(sensorCode)/daily-last/\(period)?page=\(page)&per=\(per)"
+        
+        let request = await createRequest(for: endpoint)
+        print("[SensorAPIService] fetchDailySummary URL: \(request?.url?.absoluteString ?? "<nil>")")
+        guard let request = request else {
+            throw APIError.invalidURL
+        }
+        
+        let (data, _) = try await session.data(for: request)
+        return try JSONDecoder().decode([APIDailySummary].self, from: data)
+    }
 }

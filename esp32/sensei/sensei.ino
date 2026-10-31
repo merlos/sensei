@@ -91,7 +91,7 @@ void loop() {
   // Check if readings are valid
   if (isnan(humidity) || isnan(temperature)) {
     Serial.println("Failed to read from DHT sensor!");
-    //blink_delay();
+    delay(5000);
     return;
   }
   // Calculate heat index (feels like temperature)
@@ -134,6 +134,7 @@ void loop() {
   digitalWrite(INFO_LED, LOW);
   // Sleep mode
   //delay(SLEEP_SECONDS * 1000); // Wait between requests
+  Serial.println("Deep Sleeping for " + String(SLEEP_SECONDS) + " seconds");
   esp_sleep_enable_timer_wakeup(SLEEP_SECONDS * 1000000); // microseconds 
   esp_deep_sleep_start();
 }

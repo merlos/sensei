@@ -1,5 +1,6 @@
 secrets.h
 server/config/credentials/production.yml.enc
+server/config/credentials/development.yml.enc
 server/config/credentials.yml.enc
 
 # Xcode user-specific files
