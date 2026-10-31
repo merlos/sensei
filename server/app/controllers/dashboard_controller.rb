@@ -2,13 +2,15 @@
 # Provides a web interface for viewing and managing sensor data
 class DashboardController < ApplicationController
   def index
-    @sensors = Sensor.all.order(:name)
+    @sensors = Sensor.all.order(Arel.sql("group_name IS NULL"), :group_name, :name)
+    @groups = Sensor.groups
     @total_readings = SensorDatum.count
     @latest_readings = SensorDatum.order(created_at: :desc).limit(10)
   end
 
   def sensor
     @sensor = Sensor.find_by!(code: params[:code])
+    @groups = Sensor.groups
     @readings = SensorDatum
       .where(sensor_code: @sensor.code)
       .order(created_at: :desc)

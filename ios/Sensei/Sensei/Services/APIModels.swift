@@ -14,12 +14,14 @@ struct APISensor: Codable {
     let name: String
     let units: String
     let valueType: String
+    let groupName: String?
     let createdAt: String
     let updatedAt: String
     
     enum CodingKeys: String, CodingKey {
         case id, code, name, units
         case valueType = "value_type"
+        case groupName = "group_name"
         case createdAt = "created_at"
         case updatedAt = "updated_at"
     }

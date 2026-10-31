@@ -16,6 +16,7 @@ final class Sensor {
     var name: String
     var units: String
     var valueType: String
+    var groupName: String?
     var createdAt: String
     var updatedAt: String
     var lastFetchedAt: Date
@@ -24,12 +25,13 @@ final class Sensor {
     @Relationship(deleteRule: .cascade, inverse: \SensorData.sensor)
     var sensorDataEntries: [SensorData] = []
     
-    init(sensorId: Int, code: String, name: String, units: String, valueType: String, createdAt: String, updatedAt: String, position: Int = 0) {
+    init(sensorId: Int, code: String, name: String, units: String, valueType: String, groupName: String? = nil, createdAt: String, updatedAt: String, position: Int = 0) {
         self.sensorId = sensorId
         self.code = code
         self.name = name
         self.units = units
         self.valueType = valueType
+        self.groupName = groupName
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.lastFetchedAt = Date()
@@ -44,6 +46,7 @@ final class Sensor {
             name: apiSensor.name,
             units: apiSensor.units,
             valueType: apiSensor.valueType,
+            groupName: apiSensor.groupName,
             createdAt: apiSensor.createdAt,
             updatedAt: apiSensor.updatedAt
         )

@@ -68,6 +68,7 @@ class SensorDataManager: ObservableObject {
                     existing.name = apiSensor.name
                     existing.units = apiSensor.units
                     existing.valueType = apiSensor.valueType
+                    existing.groupName = apiSensor.groupName
                     existing.updatedAt = apiSensor.updatedAt
                     existing.lastFetchedAt = Date()
                     sensor = existing

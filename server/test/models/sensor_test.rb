@@ -27,5 +27,23 @@ class SensorTest < ActiveSupport::TestCase
     sensor = Sensor.new(code: long_code, name: "Too Long")
     assert_not sensor.valid?
   end
-  
+
+  test "group_name is optional and blank values are normalized to nil" do
+    sensor = Sensor.create!(code: "no_group", group_name: "   ")
+    assert_nil sensor.group_name
+  end
+
+  test "group_name is stripped and limited to 50 chars" do
+    sensor = Sensor.create!(code: "with_group", group_name: "  Kitchen ")
+    assert_equal "Kitchen", sensor.group_name
+    assert_not Sensor.new(code: "long_group", group_name: "a" * 51).valid?
+  end
+
+  test "groups returns distinct sorted group names" do
+    Sensor.create!(code: "g1", group_name: "Living room")
+    Sensor.create!(code: "g2", group_name: "Kitchen")
+    Sensor.create!(code: "g3", group_name: "Kitchen")
+    Sensor.create!(code: "g4")
+    assert_equal ["Kitchen", "Living room"], Sensor.groups
+  end
 end

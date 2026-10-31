@@ -52,8 +52,8 @@ export default class extends Controller {
       const data = await response.json()
       
       if (data.status === "success") {
-        this.element.value = data.value
-        this.originalValue = data.value
+        this.element.value = data.value ?? ""
+        this.originalValue = this.element.value
       } else {
         this.showError(data.errors || ["Update failed"])
         this.element.value = this.originalValue

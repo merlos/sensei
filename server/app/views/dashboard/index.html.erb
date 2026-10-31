@@ -22,10 +22,16 @@
 <h2>Sensors</h2>
 
 <% if @sensors.any? %>
+  <datalist id="sensor-groups">
+    <% @groups.each do |group| %>
+      <option value="<%= group %>"></option>
+    <% end %>
+  </datalist>
   <table>
     <thead>
       <tr>
         <th>Name</th>
+        <th>Group</th>
         <th>Code</th>
         <th>Units</th>
         <th>Value Type</th>
@@ -46,6 +52,17 @@
               data-controller="inline-edit"
               data-inline-edit-url-value="<%= update_dashboard_sensor_path(sensor.code) %>"
               data-inline-edit-field-value="name"
+              data-action="blur->inline-edit#blur keydown->inline-edit#keydown">
+          </td>
+          <td>
+            <input type="text"
+              value="<%= sensor.group_name %>"
+              placeholder="—"
+              list="sensor-groups"
+              class="editable-input"
+              data-controller="inline-edit"
+              data-inline-edit-url-value="<%= update_dashboard_sensor_path(sensor.code) %>"
+              data-inline-edit-field-value="group_name"
               data-action="blur->inline-edit#blur keydown->inline-edit#keydown">
           </td>
           <td>

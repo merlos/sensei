@@ -25,6 +25,24 @@
 
 <div class="grid grid-4 mb-lg">
   <div class="card">
+    <h4 class="text-secondary mt-0">Group</h4>
+    <input type="text"
+      value="<%= @sensor.group_name %>"
+      placeholder="— (e.g. room)"
+      list="sensor-groups"
+      class="editable-input"
+      data-controller="inline-edit"
+      data-inline-edit-url-value="<%= update_dashboard_sensor_path(@sensor.code) %>"
+      data-inline-edit-field-value="group_name"
+      data-action="blur->inline-edit#blur keydown->inline-edit#keydown">
+    <datalist id="sensor-groups">
+      <% @groups.each do |group| %>
+        <option value="<%= group %>"></option>
+      <% end %>
+    </datalist>
+  </div>
+
+  <div class="card">
     <h4 class="text-secondary mt-0">Code</h4>
     <input type="text"
       value="<%= @sensor.code %>"

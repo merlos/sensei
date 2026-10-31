@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_04_164132) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_31_145615) do
   create_table "sensor_data", force: :cascade do |t|
     t.string "sensor_code"
     t.string "value"
@@ -25,6 +25,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_04_164132) do
     t.string "value_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "group_name"
     t.index ["code"], name: "index_sensors_on_code", unique: true
   end
 end

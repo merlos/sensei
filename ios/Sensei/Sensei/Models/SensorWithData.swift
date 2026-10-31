@@ -14,6 +14,7 @@ struct SensorWithData: Identifiable, Codable {
     let code: String
     let name: String
     let units: String
+    var groupName: String? = nil
     let dataPoints: [DataPoint]
     let lastUpdated: Date
     
@@ -21,7 +22,7 @@ struct SensorWithData: Identifiable, Codable {
     var sensor: Sensor? = nil
     
     enum CodingKeys: String, CodingKey {
-        case id, code, name, units, dataPoints, lastUpdated
+        case id, code, name, units, groupName, dataPoints, lastUpdated
     }
     
     struct DataPoint: Codable {
@@ -58,6 +59,7 @@ struct SensorWithData: Identifiable, Codable {
         self.code = sensor.code
         self.name = sensor.name
         self.units = sensor.units
+        self.groupName = sensor.groupName
         self.sensor = sensor
         
         let sortedData = sensor.sensorDataEntries.sorted { $0.timestamp > $1.timestamp }

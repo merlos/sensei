@@ -16,5 +16,12 @@ class SensorsControllerTest < ActionDispatch::IntegrationTest
     assert body.is_a?(Array)
     assert body.any? { |s| s["code"] == "temp_kitchen" }
   end
-  
+
+  test "sensors include group_name" do
+    Sensor.find_by!(code: "temp_kitchen").update!(group_name: "Kitchen")
+    get "/sensors", headers: @headers
+    body = JSON.parse(response.body)
+    assert_equal "Kitchen", body.find { |s| s["code"] == "temp_kitchen" }["group_name"]
+    assert body.find { |s| s["code"] == "humidity_living" }.key?("group_name")
+  end
 end

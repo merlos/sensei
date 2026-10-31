@@ -227,7 +227,7 @@ All endpoints require authentication via `Authorization: Bearer <token>` header.
 ## Sensors
 
 ### GET /sensors
-Returns list of all registered sensors.
+Returns list of all registered sensors. `group_name` is an optional label (e.g. a room) used to group sensors; it is `null` when unset. It can be edited from the web dashboard.
 
 ```sh
 curl http://localhost:3000/sensors -H "Authorization: Bearer my-secret-token-123"
@@ -235,7 +235,7 @@ curl http://localhost:3000/sensors -H "Authorization: Bearer my-secret-token-123
 
 Response:
 ```json
-[{"id":1,"code":"temperature_kitchen","name":"Temperature Kitchen","units":"C","value_type":"float","created_at":"2025-09-06T03:08:04.201Z","updated_at":"2025-09-06T03:08:04.201Z"}]
+[{"id":1,"code":"temperature_kitchen","name":"Temperature Kitchen","units":"C","value_type":"float","group_name":"Kitchen","created_at":"2025-09-06T03:08:04.201Z","updated_at":"2025-09-06T03:08:04.201Z"}]
 ```
 
 ## Sensor Data
